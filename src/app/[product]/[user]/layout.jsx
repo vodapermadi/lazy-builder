@@ -79,7 +79,7 @@ const LayoutMain = ({ children, params }) => {
                     </div>
                 </div>
             ) : (
-                <div>Loading</div>
+                <div>{message}</div>
             )}
         </div>
     )

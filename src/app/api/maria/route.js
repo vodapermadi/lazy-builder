@@ -21,31 +21,3 @@ export const POST = async (req) => {
         return NextResponse.json(error)
     }
 }
-
-let config = {
-    "db": "Server",
-    "ds": "Cluster0",
-    "key": process.env.KEY,
-    "url": process.env.URL_MONGO
-}
-
-export const PATCH = async() => {
-    const { col, fil, val } = await req.json()
-    try {
-        let newCFG = {
-            ...config,
-            col: col,
-            fil: fil,
-            val: val
-        }
-        const { data } = await axios.post(`${process.env.DATABASE_ENDPOINT}/updateOne`, JSON.stringify(newCFG), {
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-
-        return NextResponse.json(data)
-    } catch (error) {
-        return NextResponse.json(error)
-    }
-}

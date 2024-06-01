@@ -2,6 +2,7 @@
 import SideBar from '@/components/custom/SideBar'
 import { checkAuth, findData, updateOne } from '@/lib/action'
 import { getFP } from '@/lib/helper'
+import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 const LayoutMain = ({ children, params }) => {

@@ -34,7 +34,37 @@ const LayoutMain = ({ children, params }) => {
                         }).then(() => {
                             window.location.reload()
                         })
-                    } else {
+                    }else if(params.product === "facebook-crawling"){
+                        await updateOne('Pengguna', { id_user: params.user }, {
+                            fp: String(getFP()),
+                            status: true,
+                            service: {
+                                ...user[0].service,
+                                get_post: {
+                                    label: "facebook crawling",
+                                    plan: "free",
+                                    keyword:[],
+                                    metode:{
+                                        nama:"regex",
+                                        min:"1"
+                                    },
+                                    grup:null,
+                                    komentar:{
+                                        status:true,
+                                        message:""
+                                    },
+                                    reaction:{
+                                        status:true,
+                                        reaction_type:""
+                                    },
+                                    notif: true
+                                }
+                            }
+                        }).then(() => {
+                            window.location.reload()
+                        })
+                    }
+                    else {
                         console.log("layanan tidak tersedia")
                     }
 

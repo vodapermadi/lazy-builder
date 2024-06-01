@@ -21,8 +21,6 @@ export default function CheckUser() {
                             }
                         })
                     })()
-                }else{
-                    notFound()
                 }
             } else {
                 notFound()

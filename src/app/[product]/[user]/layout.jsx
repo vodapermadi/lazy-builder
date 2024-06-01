@@ -111,7 +111,7 @@ const LayoutMain = ({ children, params }) => {
     
                 })
             }else{
-                window.location.reload()
+                window.alert("failed update")
             }
         } catch (error) {
             console.log(error)

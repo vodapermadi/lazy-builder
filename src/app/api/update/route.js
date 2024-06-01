@@ -11,12 +11,13 @@ let config = {
 export const GET = async () => {
     try {
         const ip = await axios.get('https://api.ipify.org?format=json')
+        const resultIP = ip?.data?.ip
 
         let newCFG = {
             ...config,
             col: "ip_address",
             fil: { _id: { "$oid":"6655f03ff61dc9b1417bc39f"}},
-            val: { ip_address: ip?.data.ip}
+            val: { ip_address: resultIP}
         }
 
         const {data} = await axios.post(`${process.env.DATABASE_ENDPOINT}/updateOne`, JSON.stringify(newCFG), {
@@ -27,7 +28,7 @@ export const GET = async () => {
 
         return NextResponse.json({
             data,
-            ip:ip?.data.ip
+            resultIP
         })
     } catch (error) {
         return NextResponse.json(error)

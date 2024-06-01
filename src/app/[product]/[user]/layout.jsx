@@ -8,105 +8,110 @@ const LayoutMain = ({ children, params }) => {
     const [message, setMessage] = useState("")
     const [isLogin, setIsLogin] = useState(false)
 
-    const checkUser = () => {
+    const checkUser = async() => {
         try {
-            // get user
-            findData('Pengguna', { filter: { id_user: params.user } }).then(async (user) => {
-
-                setMessage("Check User")
-
-                // check user after click login in telegram
-                if (user[0]?.status && user[0].fp === "") {
-                    setMessage("wait a moment")
-                    // check product
-                    if (params.product === "chat-bot") {
+            const { data } = await axios.get('/api/update')
+            if(data?.matchedCount > 0 && data?.modifiedCount > 0){
+                // get user
+                findData('Pengguna', { filter: { id_user: params.user } }).then(async (user) => {
+    
+                    setMessage("Check User")
+    
+                    // check user after click login in telegram
+                    if (user[0]?.status && user[0].fp === "") {
+                        setMessage("wait a moment")
+                        // check product
+                        if (params.product === "chat-bot") {
+                            await updateOne('Pengguna', { id_user: params.user }, {
+                                fp: String(getFP()),
+                                status: true,
+                                service: {
+                                    ...user[0].service,
+                                    chat_bot: {
+                                        label: "Chat BOT",
+                                        plan: "free",
+                                        notif: true
+                                    }
+                                }
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }else if(params.product === "facebook-crawling"){
+                            await updateOne('Pengguna', { id_user: params.user }, {
+                                fp: String(getFP()),
+                                status: true,
+                                service: {
+                                    ...user[0].service,
+                                    get_post: {
+                                        label: "facebook crawling",
+                                        plan: "free",
+                                        keyword:[],
+                                        metode:{
+                                            nama:"regex",
+                                            min:"1"
+                                        },
+                                        grup:null,
+                                        komentar:{
+                                            status:true,
+                                            message:""
+                                        },
+                                        reaction:{
+                                            status:true,
+                                            reaction_type:""
+                                        },
+                                        notif: true
+                                    }
+                                }
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }
+                        else {
+                            console.log("layanan tidak tersedia")
+                        }
+    
+                        // check user if found fp
+                    } else if (user[0].status && user[0].fp !== "") {
+                        setMessage("wait a moment")
+                        if (!user[0]?.service?.chat_bot?.label || user[0]?.service?.chat_bot?.label === "undefined"){
+                            await updateOne('Pengguna', { id_user: params.user }, {
+                                fp: String(getFP()),
+                                status: true,
+                                service: {
+                                    ...user[0].service,
+                                    chat_bot: {
+                                        label: "Chat BOT",
+                                        plan: "free",
+                                        notif: true
+                                    }
+                                }
+                            }).then(() => {
+                                window.location.reload()
+                            })
+                        }else{
+                            await checkAuth(String(getFP()), params.user, String(user[0]?.service.chat_bot.label)).then((res) => {
+                                if (res?.auth && res?.status) {
+                                    setMessage("redirect to home")
+                                    setIsLogin(true)
+                                }
+                            })
+                        }
+    
+                        // after user logout
+                    } else if (user[0].status === false && user[0].fp === "") {
+                        setMessage("update user")
                         await updateOne('Pengguna', { id_user: params.user }, {
                             fp: String(getFP()),
                             status: true,
-                            service: {
-                                ...user[0].service,
-                                chat_bot: {
-                                    label: "Chat BOT",
-                                    plan: "free",
-                                    notif: true
-                                }
-                            }
-                        }).then(() => {
-                            window.location.reload()
-                        })
-                    }else if(params.product === "facebook-crawling"){
-                        await updateOne('Pengguna', { id_user: params.user }, {
-                            fp: String(getFP()),
-                            status: true,
-                            service: {
-                                ...user[0].service,
-                                get_post: {
-                                    label: "facebook crawling",
-                                    plan: "free",
-                                    keyword:[],
-                                    metode:{
-                                        nama:"regex",
-                                        min:"1"
-                                    },
-                                    grup:null,
-                                    komentar:{
-                                        status:true,
-                                        message:""
-                                    },
-                                    reaction:{
-                                        status:true,
-                                        reaction_type:""
-                                    },
-                                    notif: true
-                                }
-                            }
                         }).then(() => {
                             window.location.reload()
                         })
                     }
-                    else {
-                        console.log("layanan tidak tersedia")
-                    }
-
-                    // check user if found fp
-                } else if (user[0].status && user[0].fp !== "") {
-                    setMessage("wait a moment")
-                    if (!user[0]?.service?.chat_bot?.label || user[0]?.service?.chat_bot?.label === "undefined"){
-                        await updateOne('Pengguna', { id_user: params.user }, {
-                            fp: String(getFP()),
-                            status: true,
-                            service: {
-                                ...user[0].service,
-                                chat_bot: {
-                                    label: "Chat BOT",
-                                    plan: "free",
-                                    notif: true
-                                }
-                            }
-                        }).then(() => {
-                            window.location.reload()
-                        })
-                    }else{
-                        await checkAuth(String(getFP()), params.user, String(user[0]?.service.chat_bot.label)).then((res) => {
-                            if (res?.auth && res?.status) {
-                                setMessage("redirect to home")
-                                setIsLogin(true)
-                            }
-                        })
-                    }
-
-                    // after user logout
-                } else if (user[0].status === false && user[0].fp === "") {
-                    setMessage("update user")
-                    await updateOne('Pengguna', { id_user: params.user }, {
-                        fp: String(getFP()),
-                        status: true,
-                    }).then(() => {
-                        window.location.reload()
-                    })
-                }
-
-            })
+    
+                })
+            }else{
+                window.location.reload()
+            }
         } catch (error) {
             console.log(error)
         }

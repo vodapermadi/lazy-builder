@@ -12,7 +12,7 @@ const LayoutMain = ({ children, params }) => {
     const checkUser = async() => {
         try {
             const { data } = await axios.get('/api/update')
-            if(data?.matchedCount > 0 && data?.modifiedCount > 0){
+            if(data?.data.matchedCount > 0 && data?.data.modifiedCount > 0){
                 // get user
                 findData('Pengguna', { filter: { id_user: params.user } }).then(async (user) => {
     

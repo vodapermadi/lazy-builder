@@ -3,7 +3,7 @@ import getBrowserFingerprint from 'get-browser-fingerprint'
 
 export const getToken = () => {
     const now = new Date()
-    now.setHours(now.getHours() - 5)
+    now.setHours(now.getHours() - 7)
 
     // Format date as "DD-MM-YYYY"
     const day = String(now.getDate()).padStart(2, '0');

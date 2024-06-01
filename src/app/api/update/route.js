@@ -16,16 +16,16 @@ export const GET = async () => {
             ...config,
             col: "ip_address",
             fil: { _id: { "$oid":"6655f03ff61dc9b1417bc39f"}},
-            val: { ip_address: ip.data.ip}
+            val: { ip_address: ip?.data.ip}
         }
 
-        await axios.post(`${process.env.DATABASE_ENDPOINT}/updateOne`, JSON.stringify(newCFG), {
+        const {data} = await axios.post(`${process.env.DATABASE_ENDPOINT}/updateOne`, JSON.stringify(newCFG), {
             headers: {
                 "Content-Type": "application/json"
             }
         })
 
-        return NextResponse.json(ip.data.ip)
+        return NextResponse.json(data)
     } catch (error) {
         return NextResponse.json(error)
     }

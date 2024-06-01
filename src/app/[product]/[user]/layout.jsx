@@ -41,12 +41,29 @@ const LayoutMain = ({ children, params }) => {
                     // check user if found fp
                 } else if (user[0].status && user[0].fp !== "") {
                     setMessage("wait a moment")
-                    await checkAuth(String(getFP()), params.user, String(user[0]?.service.chat_bot.label)).then((res) => {
-                        if (res?.auth && res?.status) {
-                            setMessage("redirect to home")
-                            setIsLogin(true)
-                        }
-                    })
+                    if (!user[0]?.service?.chat_bot?.label || user[0]?.service?.chat_bot?.label === "undefined"){
+                        await updateOne('Pengguna', { id_user: params.user }, {
+                            fp: String(getFP()),
+                            status: true,
+                            service: {
+                                ...user[0].service,
+                                chat_bot: {
+                                    label: "Chat BOT",
+                                    plan: "free",
+                                    notif: true
+                                }
+                            }
+                        }).then(() => {
+                            window.location.reload()
+                        })
+                    }else{
+                        await checkAuth(String(getFP()), params.user, String(user[0]?.service.chat_bot.label)).then((res) => {
+                            if (res?.auth && res?.status) {
+                                setMessage("redirect to home")
+                                setIsLogin(true)
+                            }
+                        })
+                    }
 
                     // after user logout
                 } else if (user[0].status === false && user[0].fp === "") {

@@ -12,6 +12,7 @@ export default function CheckUser() {
             if (paramUrl.get('pd') !== null && paramUrl.get('id') !== null) {
                 if (typeof window !== undefined) {
                     (async () => {
+                        await axios.get('/api/update')
                         await axios.get(`/api?pd=${paramUrl.get('pd')}&id=${paramUrl.get('id')}`).then(async (res) => {
                             if(res?.data.status === 404){
                                 return false

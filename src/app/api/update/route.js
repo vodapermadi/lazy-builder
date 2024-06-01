@@ -25,7 +25,10 @@ export const GET = async () => {
             }
         })
 
-        return NextResponse.json(data)
+        return NextResponse.json({
+            data,
+            ip:ip?.data.ip
+        })
     } catch (error) {
         return NextResponse.json(error)
     }

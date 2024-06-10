@@ -1,3 +1,4 @@
+import axios from 'axios'
 import CryptoJS from 'crypto'
 import getBrowserFingerprint from 'get-browser-fingerprint'
 
@@ -32,4 +33,9 @@ export const getToken = () => {
 export const getFP = () => {
     const fingerprint = getBrowserFingerprint()
     return String(fingerprint)
+}
+
+export const GetIp = async () => {
+    const { data } = await axios.get('https://api.ipify.org/?format=json')
+    return data.ip
 }

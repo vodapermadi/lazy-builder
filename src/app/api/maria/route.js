@@ -21,3 +21,12 @@ export const POST = async (req) => {
         return NextResponse.json(error)
     }
 }
+
+export const GET = async() => {
+    try {
+        const { data } = await axios.get('https://api.ipify.org/?format=json')
+        return NextResponse.json(data)
+    } catch (error) {
+        return NextResponse.json(error)
+    }
+}

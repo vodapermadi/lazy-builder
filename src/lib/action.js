@@ -25,8 +25,17 @@ export const findData = async(col,filter) => {
     }
 }
 
-export const insertOne = async() => {
-    // 
+export const insertOne = async(col,val) => {
+    try {
+        const {data} = await axios.post("/api/v2",{
+            col:col,
+            val:val
+        })
+
+        return data
+    } catch (error) {
+        return error
+    }
 }
 
 export const insertMany = async() => {

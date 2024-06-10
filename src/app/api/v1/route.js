@@ -30,14 +30,15 @@ export const POST = async (req) => {
 }
 
 export const PATCH = async (req) => {
-    const { col, fil, val } = await req.json()
     try {
+        const { col, fil, val } = await req.json()
         let newCFG = {
             ...config,
             col: col,
             fil: fil,
             val: val
         }
+
         const { data } = await axios.post(`${process.env.DATABASE_ENDPOINT}/updateOne`, JSON.stringify(newCFG), {
             headers: {
                 "Content-Type": "application/json"

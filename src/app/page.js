@@ -28,7 +28,7 @@ export default function CheckUser() {
     })
     return (
         <>
-            Not Found
+            waitt...
         </>
     );
 }

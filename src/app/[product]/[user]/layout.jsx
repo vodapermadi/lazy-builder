@@ -2,22 +2,19 @@
 import SideBar from '@/components/custom/SideBar'
 import { checkAuth, findData, updateOne } from '@/lib/action'
 import { getFP } from '@/lib/helper'
-import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 const LayoutMain = ({ children, params }) => {
     const [message, setMessage] = useState("")
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
 
-    const checkUser = async() => {
+    const checkUser = async () => {
         try {
-            const { data } = await axios.get('/api/update')
-            if(data?.data.matchedCount > 0 && data?.data.modifiedCount > 0){
                 // get user
                 findData('Pengguna', { filter: { id_user: params.user } }).then(async (user) => {
-    
+
                     setMessage("Check User")
-    
+
                     // check user after click login in telegram
                     if (user[0]?.status && user[0].fp === "") {
                         setMessage("wait a moment")
@@ -37,28 +34,28 @@ const LayoutMain = ({ children, params }) => {
                             }).then(() => {
                                 window.location.reload()
                             })
-                        }else if(params.product === "facebook-crawling"){
+                        } else if (params.product === "facebook-crawling") {
                             await updateOne('Pengguna', { id_user: params.user }, {
                                 fp: String(getFP()),
                                 status: true,
                                 service: {
                                     ...user[0].service,
                                     get_post: {
-                                        label: "facebook crawling",
+                                        label: "Facebook Crawling",
                                         plan: "free",
-                                        keyword:[],
-                                        metode:{
-                                            nama:"regex",
-                                            min:"1"
+                                        keyword: [],
+                                        metode: {
+                                            nama: "regex",
+                                            min: "1"
                                         },
-                                        grup:null,
-                                        komentar:{
-                                            status:true,
-                                            message:""
+                                        grup: null,
+                                        komentar: {
+                                            status: true,
+                                            message: ""
                                         },
-                                        reaction:{
-                                            status:true,
-                                            reaction_type:""
+                                        reaction: {
+                                            status: true,
+                                            reaction_type: ""
                                         },
                                         notif: true
                                     }
@@ -70,11 +67,11 @@ const LayoutMain = ({ children, params }) => {
                         else {
                             console.log("layanan tidak tersedia")
                         }
-    
+
                         // check user if found fp
                     } else if (user[0].status && user[0].fp !== "") {
                         setMessage("wait a moment")
-                        if (!user[0]?.service?.chat_bot?.label || user[0]?.service?.chat_bot?.label === "undefined"){
+                        if (!user[0]?.service?.chat_bot?.label || user[0]?.service?.chat_bot?.label === "undefined") {
                             await updateOne('Pengguna', { id_user: params.user }, {
                                 fp: String(getFP()),
                                 status: true,
@@ -89,15 +86,55 @@ const LayoutMain = ({ children, params }) => {
                             }).then(() => {
                                 window.location.reload()
                             })
-                        }else{
-                            await checkAuth(String(getFP()), params.user, String(user[0]?.service.chat_bot.label)).then((res) => {
-                                if (res?.auth && res?.status) {
-                                    setMessage("redirect to home")
-                                    setIsLogin(true)
+                        }
+                        else if (!user[0]?.service?.get_post?.label || user[0]?.service?.get_post?.label === "undefined") {
+                            await updateOne('Pengguna', { id_user: params.user }, {
+                                fp: String(getFP()),
+                                status: true,
+                                service: {
+                                    ...user[0].service,
+                                    get_post: {
+                                        label: "Facebook Crawling",
+                                        plan: "free",
+                                        keyword: [],
+                                        metode: {
+                                            nama: "regex",
+                                            min: "1"
+                                        },
+                                        grup: null,
+                                        komentar: {
+                                            status: true,
+                                            message: ""
+                                        },
+                                        reaction: {
+                                            status: true,
+                                            reaction_type: ""
+                                        },
+                                        notif: true
+                                    }
                                 }
+                            }).then(() => {
+                                window.location.reload()
                             })
                         }
-    
+                        else {
+                            if (params.product === "facebook-crawling"){
+                                await checkAuth(String(getFP()), params.user, String(user[0]?.service?.get_post?.label)).then((res) => {
+                                    if (res?.auth && res?.status) {
+                                        setMessage("redirect to home")
+                                        setIsLogin(true)
+                                    }
+                                })
+                            } else if (params.product === "chat-bot"){
+                                await checkAuth(String(getFP()), params.user, String(user[0]?.service?.chat_bot.label)).then((res) => {
+                                    if (res?.auth && res?.status) {
+                                        setMessage("redirect to home")
+                                        setIsLogin(true)
+                                    }
+                                })
+                            }
+                        }
+
                         // after user logout
                     } else if (user[0].status === false && user[0].fp === "") {
                         setMessage("update user")
@@ -108,21 +145,20 @@ const LayoutMain = ({ children, params }) => {
                             window.location.reload()
                         })
                     }
-    
+
                 })
-            }else{
-                window.alert("failed update")
-            }
         } catch (error) {
             console.log(error)
         }
     }
 
-    useEffect(() => {
-        checkUser()
-    }, [])
-    return (
+    // useEffect(() => {
+    //     if(typeof window !== undefined){
+    //         checkUser()
+    //     }
+    // }, [])
 
+    return (
         <div>
             {isLogin ? (
                 <div className="relative">

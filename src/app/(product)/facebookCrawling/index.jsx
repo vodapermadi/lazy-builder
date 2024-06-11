@@ -97,7 +97,7 @@ const FacebookCrawling = ({ user }) => {
 		for (let i = 0; i < formData.getAll('cookie_path').length; i++) {
 			if (formData.get('type') === "text") {
 				data.push({
-					cookie_path: formData.getAll('cookie_path'),
+					cookie_path: formData.getAll('cookie_path')[i],
 					id_account: formData.getAll('cookie_path')[i].split('/')[7],
 					text: formData.get('text'),
 					type: formData.get('type'),

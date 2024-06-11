@@ -105,7 +105,7 @@ const FacebookCrawling = ({ user }) => {
 				})
 			} else {
 				data.push({
-					cookie_path: formData.getAll('cookie_path'),
+					cookie_path: formData.getAll('cookie_path')[i],
 					id_account: formData.getAll('cookie_path')[i].split('/')[7],
 					path: formData.get('path'),
 					type: formData.get('type'),

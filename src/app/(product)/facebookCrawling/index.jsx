@@ -7,7 +7,6 @@ import { useState } from "react"
 import { v4 } from "uuid"
 import PostMessage from "./components/PostMessage"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import axios from "axios"
 
 const FacebookCrawling = ({ user }) => {
 	const routes = useSearchParams()
@@ -88,56 +87,68 @@ const FacebookCrawling = ({ user }) => {
 
 	const handleMessage = async (e) => {
 		e.preventDefault()
+		setLoading({
+			status: true,
+			message: "proses add data"
+		})
 		const formData = new FormData(e.target)
 
-		await findData('resource', {
-			filter: {
-				id_user: String(user)
+		let data = []
+		for (let i = 0; i < formData.getAll('cookie_path').length; i++) {
+			if (formData.get('type') === "text") {
+				data.push({
+					cookie_path: formData.getAll('cookie_path'),
+					id_account: formData.getAll('cookie_path')[i].split('/')[7],
+					text: formData.get('text'),
+					type: formData.get('type'),
+					link_grup: formData.get('grup') !== null ? formData.getAll('grup') : "",
+				})
+			} else {
+				data.push({
+					cookie_path: formData.getAll('cookie_path'),
+					id_account: formData.getAll('cookie_path')[i].split('/')[7],
+					path: formData.get('path'),
+					type: formData.get('type'),
+					text: formData.get('text'),
+					link_grup: formData.get('grup') !== null ? formData.getAll('grup') : "",
+				})
 			}
-		}).then((res) => {
-			let data = []
-			for(let i = 0;i < res?.length;i++){
-				if (formData.get('type') === "text"){
-					data.push({
-						cookie_path:res[i]?.cookie,
-						id_account:res[i]?.id_account,
-						text:formData.get('text'),
-						type:formData.get('type')
-					})
-				}else{
-					data.push({
-						cookie_path: res[i]?.cookie,
-						id_account: res[i]?.id_account,
-						path: formData.get('path'),
-						type: formData.get('type'),
-						text: formData.get('text')
-					})
-				}
-			}
-			let json = {
-				type: formData.get('metode'),
-				post_at: formData.get('post_at'),
-				id_user: user,
-				mode:"post_message",
-				data:data
-			}
+		}
+		let json = {
+			type: formData.get('metode'),
+			post_at: formData.get('post_at'),
+			id_user: user,
+			mode: "post_message",
+			data: data
+		}
 
-			handlePost(json).then((res) => {
-				console.log(res)
+		handlePost(json).then((res) => {
+			insertOne('posting', {
+				json
+			}).then(() => {
+				setLoading({
+					status: true,
+					message: "complete"
+				})
+
+				setTimeout(() => {
+					window.location.reload()
+				}, 400)
 			})
-		})
 
-		// let json = {
-		// 	data:data
-		// }
-		// handlePost()
+		})
+	}
+
+	const getGrup = async (val) => {
+		const response = await handlePost(val)
+		return response.data
 	}
 
 	return (
 		<>
 			{loading.status && (
-				<Alert>
-					<AlertDescription>
+				<Alert className="bg-blue-600/30 border border-blue-400">
+					<AlertDescription className="font-bold text-lg">
 						{loading.message}
 					</AlertDescription>
 				</Alert>
@@ -151,7 +162,7 @@ const FacebookCrawling = ({ user }) => {
 			)}
 
 			{routes.get('side') === "message" && (
-				<PostMessage user={user} handleMessage={handleMessage} />
+				<PostMessage user={user} handleMessage={handleMessage} grup={getGrup} />
 			)}
 		</>
 	)

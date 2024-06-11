@@ -1,17 +1,10 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { useEffect, useState } from "react"
-import { handlePost} from "../server/action"
+import { useState } from "react"
 
 const AccountComponents = ({ handleForm, user }) => {
     const [count, setCount] = useState(1)
-    useEffect(() => {
-        handlePost({
-            id_user:user,
-            mode:"get_grup"
-        }).then(res => console.log(res))
-    },[])
     return (
 
         <form method="post" className="w-full" onSubmit={handleForm}>

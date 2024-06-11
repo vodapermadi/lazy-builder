@@ -8,9 +8,11 @@ const GaleriComponents = ({ user, handleGaleri,loading }) => {
     const [image, setImage] = useState([])
 
     useEffect(() => {
-        findData('images', { filter: { id_user: user } }).then((res) => {
-            setImage(res)
-        })
+        (async() => {
+            findData('images', { filter: { id_user: user } }).then((res) => {
+                setImage(res)
+            })
+        })()
     }, [])
     return (
         <>
@@ -30,7 +32,7 @@ const GaleriComponents = ({ user, handleGaleri,loading }) => {
                     </DialogContent>
                 </Dialog>
                 <div className='w-full grid grid-cols-3 mt-5 gap-2'>
-                    {image.length === 0 ? (
+                    {image?.length === 0 ? (
                         <div className='w-full text-center mt-5 font-semibold'>Images not found</div>
                     ) : image?.map((row, i) => {
                         return (

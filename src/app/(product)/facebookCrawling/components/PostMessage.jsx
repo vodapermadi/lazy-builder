@@ -42,7 +42,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
             <div className='w-full'>
                 <form method='post' className='space-x-3' onSubmit={handleMessage}>
                     <div className='mb-3 flex flex-col w-full gap-2 justify-center items-center'>
-                        <Select name='metode'>
+                        <Select name='metode' required>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a methode upload" />
                             </SelectTrigger>
@@ -54,14 +54,14 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
-                        <Input name="post_at" placeholder="Post At" type="time" />
-                        <Textarea name="text" placeholder="text" type="text" />
-                        <select name="type" className='w-full py-2 rounded p-2 text-black'>
+                        <Input name="post_at" required placeholder="Post At" type="time" />
+                        <Textarea name="text" required placeholder="text" type="text" />
+                        <select name="type" required className='w-full py-2 rounded p-2 text-black'>
                             <option value="">-- pilih type --</option>
                             <option value="img">Image</option>
                             <option value="text">Text</option>
                         </select>
-                        <select name="grup" multiple className='w-full py-2 rounded p-2 text-black'>
+                        <select name="grup" multiple required className='w-full py-2 rounded p-2 text-black'>
                             <option value="">-- group link --</option>
                             {group !== undefined && group.length > 0 && group.map((row,i) => {
                                 return(
@@ -69,7 +69,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                                 )
                             })}
                         </select>
-                        <select name="cookie_path" multiple className='w-full py-2 rounded p-2 text-black'>
+                        <select name="cookie_path" multiple required className='w-full py-2 rounded p-2 text-black'>
                             <option value="">-- account --</option>
                             {account.map((row, i) => {
                                 return (
@@ -77,7 +77,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                                 )
                             })}
                         </select>
-                        <select multiple name="path" className='w-full rounded p-2 text-black bg-gray-700'>
+                        <select multiple name="path" required className='w-full rounded p-2 text-black bg-gray-700'>
                             <option value="" className='text-white'>-- pilih gambar --</option>
                             {path?.length !== 0 ? path?.map((row) => {
                                 return (

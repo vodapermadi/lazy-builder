@@ -44,7 +44,7 @@ const FacebookCrawling = ({ user }) => {
 	}
 
 	const handleDelete = (path) => {
-		if (window.confirm("yakin??")) {
+		if (window.confirm("hapus gambar ini??")) {
 			postImage({
 				mode: "img_delete",
 				path: path

@@ -73,7 +73,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                             <option value="">-- account --</option>
                             {account.map((row, i) => {
                                 return (
-                                    <option key={i} value={row.cookie}>{row.account_link}</option>
+                                    <option key={i} value={`/home/kimin/FB_Ads/db/${user}/cookie/${row.id_account}.min`}>{row.account_link}</option>
                                 )
                             })}
                         </select>

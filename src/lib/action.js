@@ -27,7 +27,7 @@ export const findData = async(col,filter) => {
 
 export const insertOne = async(col,val) => {
     try {
-        const {data} = await axios.post("/api/v2",{
+        const {data} = await axios.post("/api/v2?mode=single",{
             col:col,
             val:val
         })
@@ -38,8 +38,17 @@ export const insertOne = async(col,val) => {
     }
 }
 
-export const insertMany = async() => {
-    // 
+export const insertMany = async(col,val) => {
+    try {
+        const { data } = await axios.post("/api/v2?mode=multiple", {
+            col: col,
+            val: val
+        })
+
+        return data
+    } catch (error) {
+        return error
+    }
 }
 
 export const updateOne = async(col,fil,val) => {
@@ -60,8 +69,17 @@ export const updateMany = async() => {
     // 
 }
 
-export const deleteOne = async() => {
-    // 
+export const deleteOne = async(col,val) => {
+    try {
+        const { data } = await axios.post("/api/v3?mode=single", {
+            col: col,
+            val: val
+        })
+
+        return data
+    } catch (error) {
+        return error
+    }
 }
 
 export const deleteMany = async() => {

@@ -1,6 +1,6 @@
 import { handlePost, postImage } from "./server/action"
 import GaleriComponents from "./components/Galeri"
-import { findData, insertOne } from "@/lib/action"
+import { deleteOne, findData, insertMany, insertOne } from "@/lib/action"
 import { useSearchParams } from "next/navigation"
 import AccountComponents from "./components/Account"
 import { useState } from "react"
@@ -43,6 +43,26 @@ const FacebookCrawling = ({ user }) => {
 		})
 	}
 
+	const handleDelete = (path) => {
+		if (window.confirm("yakin??")) {
+			postImage({
+				mode: "img_delete",
+				path: path
+			}).then((row) => {
+				deleteOne("images", {path:path}).then((res) => {
+					setLoading({
+						status: true,
+						message: "complete"
+					})
+
+					setTimeout(() => {
+						window.location.reload()
+					}, 400)
+				})
+			})
+		}
+	}
+
 	const handleAccount = async (e) => {
 		e.preventDefault()
 		setLoading({
@@ -68,11 +88,16 @@ const FacebookCrawling = ({ user }) => {
 		}
 
 		handlePost(result).then((row) => {
-			insertOne('resource', {
-				cookie: row.data[0]?.cookie_path,
-				id_account: row.data[0]?.id_account,
-				id_user: user
-			}).then(() => {
+			let manipulation = []
+			data.forEach((row) => {
+				manipulation.push({
+					id_account: row.id_account,
+					account_link:row.account_link,
+					id_user:user
+				})
+			})
+
+			insertMany('resource', manipulation).then(() => {
 				setLoading({
 					status: true,
 					message: "complete"
@@ -135,7 +160,6 @@ const FacebookCrawling = ({ user }) => {
 					window.location.reload()
 				}, 400)
 			})
-
 		})
 	}
 
@@ -154,7 +178,7 @@ const FacebookCrawling = ({ user }) => {
 				</Alert>
 			)}
 			{routes.get('side') === "galeri" && (
-				<GaleriComponents user={user} handleGaleri={handleGaleri} />
+				<GaleriComponents deleteImage={handleDelete} user={user} handleGaleri={handleGaleri} />
 			)}
 
 			{routes.get('side') === "account" && (

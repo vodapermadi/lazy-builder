@@ -4,7 +4,7 @@ import { findData } from '@/lib/action'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
-const GaleriComponents = ({ user, handleGaleri,loading }) => {
+const GaleriComponents = ({ user, handleGaleri,deleteImage }) => {
     const [image, setImage] = useState([])
 
     useEffect(() => {
@@ -36,7 +36,7 @@ const GaleriComponents = ({ user, handleGaleri,loading }) => {
                         <div className='w-full text-center mt-5 font-semibold'>Images not found</div>
                     ) : image?.map((row, i) => {
                         return (
-                            <Image key={i} src={`data:image/png;base64,${row.source}`} alt={`images ${i}`} width={500} height={500} className='w-full h-auto object-cover' />
+                            <Image onClick={() => deleteImage(row.path)} key={i} src={`data:image/png;base64,${row.source}`} alt={`images ${i}`} width={500} height={500} className='w-full h-auto object-cover' />
                         )
                     })}
                 </div>

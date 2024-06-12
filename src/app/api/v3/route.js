@@ -1,19 +1,29 @@
 import axios from "axios"
 import { NextResponse } from "next/server"
 
-export const GET = async(req) => {
-    // try {
-    //     const body = await req.formData()
-    //     // console.log(body)
-    //     const { data } = await axios.post(`${process.env.BACKEND_ENDPOINT}/upload_multiple`,body,{
-    //         headers:{
-    //             "Content-Type":"multipart/form-data"
-    //         }
-    //     })
-    //     return NextResponse.json(data)
-    // } catch (error) {
-    //     return NextResponse.json(error)
-    // }
-    const body = await req.nextUrl.searchParams
-    return NextResponse.json(body.get('handle'))
+let config = {
+    "db": "Layanan",
+    "ds": "Cluster0",
+    "key": process.env.KEY,
+    "url": process.env.URL_MONGO
+}
+
+export const POST = async (req) => {
+    try {
+        const url = await req.nextUrl.searchParams
+        if (url.get('mode') === "single") {
+            const { col, val } = await req.json()
+            let newCFG = {
+                ...config,
+                col: col,
+                val: val,
+            }
+
+            const address = process.env.DATABASE_ENDPOINT
+            const { data } = await axios.post(`${address}/deleteOne`, newCFG)
+            return NextResponse.json(data)
+        }
+    } catch (error) {
+        return NextResponse.json(error)
+    }
 }

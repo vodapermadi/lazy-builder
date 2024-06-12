@@ -12,7 +12,7 @@ const AccountComponents = ({ handleForm, user }) => {
                 return (
                     <div key={row} className="w-full border border-gray-400 p-3 flex flex-col justify-center items-center gap-3 mt-2">
                         <Input name="cookie" placeholder="cookie" className="border border-gray-400" />
-                        <Input name="account_link" placeholder="account link" className="border border-gray-400" />
+                        <Input name="account_link" placeholder="name account" className="border border-gray-400" />
                         <Input name="ua" placeholder="user agent" className="border border-gray-400" />
                         <Input name="grup_join" placeholder="group join" className="border border-gray-400" />
                     </div>

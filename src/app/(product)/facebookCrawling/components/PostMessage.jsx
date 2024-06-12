@@ -1,5 +1,6 @@
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import { findData } from '@/lib/action'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
@@ -30,6 +31,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
 
             grup({id_user:user,mode:"get_grup"}).then((row) => {
                 setGroup(row)
+                console.log(row)
             })
         })()
 
@@ -53,7 +55,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                             </SelectContent>
                         </Select>
                         <Input name="post_at" placeholder="Post At" type="time" />
-                        <Input name="text" placeholder="text" type="text" />
+                        <Textarea name="text" placeholder="text" type="text" />
                         <select name="type" className='w-full py-2 rounded p-2 text-black'>
                             <option value="">-- pilih type --</option>
                             <option value="img">Image</option>
@@ -61,7 +63,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                         </select>
                         <select name="grup" multiple className='w-full py-2 rounded p-2 text-black'>
                             <option value="">-- group link --</option>
-                            {group.map((row,i) => {
+                            {group !== undefined && group.length > 0 && group.map((row,i) => {
                                 return(
                                     <option key={i} value={row.link}>{row.name}</option>
                                 )
@@ -71,7 +73,7 @@ const PostMessage = ({ user, handleMessage,grup }) => {
                             <option value="">-- account --</option>
                             {account.map((row, i) => {
                                 return (
-                                    <option key={i} value={row.cookie}>{`account ${i}`}</option>
+                                    <option key={i} value={row.cookie}>{row.account_link}</option>
                                 )
                             })}
                         </select>

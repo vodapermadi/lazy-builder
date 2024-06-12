@@ -1,6 +1,6 @@
 import { handlePost, postImage } from "./server/action"
 import GaleriComponents from "./components/Galeri"
-import { deleteOne, findData, insertMany, insertOne } from "@/lib/action"
+import { deleteMany, deleteOne, findData, insertMany, insertOne } from "@/lib/action"
 import { useSearchParams } from "next/navigation"
 import AccountComponents from "./components/Account"
 import { useState } from "react"
@@ -43,7 +43,7 @@ const FacebookCrawling = ({ user }) => {
 		})
 	}
 
-	const handleDelete = (path) => {
+	const handleDeleteImage = (path) => {
 		if (window.confirm("hapus gambar ini??")) {
 			postImage({
 				mode: "img_delete",
@@ -69,6 +69,9 @@ const FacebookCrawling = ({ user }) => {
 			status: true,
 			message: "proses add data"
 		})
+
+		await deleteMany('resource',{id_user:user})
+
 		const formData = new FormData(e.target)
 		let data = []
 		for (let i = 0; i < formData.getAll('cookie').length; i++) {
@@ -178,7 +181,7 @@ const FacebookCrawling = ({ user }) => {
 				</Alert>
 			)}
 			{routes.get('side') === "galeri" && (
-				<GaleriComponents deleteImage={handleDelete} user={user} handleGaleri={handleGaleri} />
+				<GaleriComponents deleteImage={handleDeleteImage} user={user} handleGaleri={handleGaleri} />
 			)}
 
 			{routes.get('side') === "account" && (

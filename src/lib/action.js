@@ -82,8 +82,17 @@ export const deleteOne = async(col,val) => {
     }
 }
 
-export const deleteMany = async() => {
-    // 
+export const deleteMany = async(col,val) => {
+    try {
+        const { data } = await axios.post("/api/v3?mode=multiple", {
+            col: col,
+            val: val
+        })
+
+        return data
+    } catch (error) {
+        return error
+    }
 }
 
 // custom api endpoint json

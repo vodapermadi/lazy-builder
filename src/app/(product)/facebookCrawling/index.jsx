@@ -7,6 +7,8 @@ import { useState } from "react"
 import { v4 } from "uuid"
 import PostMessage from "./components/PostMessage"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import Posting from "./components/Posting"
+import FormPosting from "./components/FormPosting"
 
 const FacebookCrawling = ({ user }) => {
 	const routes = useSearchParams()
@@ -191,6 +193,14 @@ const FacebookCrawling = ({ user }) => {
 			{routes.get('side') === "message" && (
 				<PostMessage user={user} handleMessage={handleMessage} grup={getGrup} />
 			)}
+
+			{/* {routes.get('side') === "postingan" && (
+				<Posting user={user} />
+			)}
+
+			{routes.get('side') === "form-postingan" && (
+				<FormPosting user={user} />
+			)} */}
 		</>
 	)
 }
